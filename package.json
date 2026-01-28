@@ -1,0 +1,15 @@
+{
+  "name": "iamfine",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "dev": "bun --workspaces dev"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.27.0"
+  }
+}
