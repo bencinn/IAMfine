@@ -1,7 +1,7 @@
 import "./index.css";
 
-import type { App } from "@yuru/server";
 import { useQuery } from "@tanstack/react-query";
+import type { App } from "@yuru/server";
 
 import getTreaty from "./api";
 

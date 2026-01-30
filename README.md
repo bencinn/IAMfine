@@ -1,6 +1,7 @@
 # IAMfine
 
 ## Setup
+
 1. Generate JWKS
    ```bash
    cd packages/server
