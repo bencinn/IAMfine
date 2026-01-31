@@ -1,16 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import logo from "../logo.svg";
 import { useQuery } from "@tanstack/react-query";
-import type { App as ServerApp } from "@yuru/server";
+import type { App } from "@yuru/server";
 import { treaty } from "@elysiajs/eden";
 
 export const Route = createFileRoute("/")({
-  component: App,
+  component: RouteComponent,
 });
 
-const getTreaty = treaty<ServerApp>("localhost:3001");
+const getTreaty = treaty<App>("localhost:3001");
 
-function App() {
+function RouteComponent() {
   const query = useQuery({ queryKey: ["todos"], queryFn: () => getTreaty.get() });
   return (
     <div className="text-center">
@@ -20,26 +20,8 @@ function App() {
           className="h-[40vmin] pointer-events-none animate-[spin_20s_linear_infinite]"
           alt="logo"
         />
-        <p>
-          Edit <code>src/routes/index.tsx</code> and save to reload.
-        </p>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://tanstack.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn TanStack
-        </a>
-        <p>Status: {query.isLoading ? "loading" : "done"}</p>
+        <p>IAMfine front running</p>
+        <p>Pinging server: {query.isLoading ? "loading" : "done"}</p>
         <p>Data: {query.data?.data ?? "N/A"}</p>
       </header>
     </div>
