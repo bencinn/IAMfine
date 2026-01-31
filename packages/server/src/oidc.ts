@@ -2,7 +2,7 @@ import { Elysia } from "elysia";
 import z from "zod";
 import db from "./db";
 import * as schema from "./db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and, arrayContains } from "drizzle-orm";
 
 import { verifySesh } from "./authn";
 
@@ -41,10 +41,16 @@ const oidc = new Elysia()
         });
         return Response.redirect(newUrl);
       }
+
       const ident_info = await db
         .select()
         .from(schema.users_ident)
-        .where(eq(schema.users_ident.id, cur_ident.value as string));
+        .where(
+          and(
+            eq(schema.users_ident.id, cur_ident.value as string),
+            arrayContains(schema.users_ident.client_id, [query.client_id]),
+          ),
+        );
 
       const r = ident_info[0];
       const code = await db.insert(schema.authz).values({ ident_id: r.id }).returning();

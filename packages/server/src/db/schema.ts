@@ -18,6 +18,7 @@ export const sesh = pgTable("sesh", {
 export const users_ident = pgTable("uiden", {
   id: uuid().defaultRandom().primaryKey(),
   email: text().notNull(),
+  client_id: text().array(),
   owner: uuid()
     .notNull()
     .references(() => users.id),
