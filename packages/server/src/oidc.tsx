@@ -9,6 +9,14 @@ import { verifySesh } from "./authn";
 
 const oidc = new Elysia()
   .use(html())
+  .get("/.well-known/openid-configuration", () =>
+    Response.json({
+      jwks_uri: "http://oidc.chimamema.me/.well-known/jwks.json",
+      authorization_endpoint: "http://oidc.chimamema.me/authorize",
+      token_endpoint: "http://oidc.chimamema.me/token",
+      userinfo_endpoint: "http://oidc.chimamema.me/userinfo",
+    }),
+  )
   .get("/.well-known/jwks.json", async () => {
     const r = await Bun.file("./public-key.json").json();
     if (!r.error) {
