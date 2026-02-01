@@ -1,4 +1,4 @@
-import { integer, pgTable, timestamp, uuid, text, boolean } from "drizzle-orm/pg-core";
+import { index, integer, pgTable, timestamp, uuid, text, boolean } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: uuid().defaultRandom().primaryKey(),
@@ -18,7 +18,7 @@ export const sesh = pgTable("sesh", {
 export const users_ident = pgTable("uiden", {
   id: uuid().defaultRandom().primaryKey(),
   email: text().notNull(),
-  client_id: text().array(),
+  permit_client_id: text().array(),
   owner: uuid()
     .notNull()
     .references(() => users.id),
@@ -32,4 +32,5 @@ export const authz = pgTable("authz", {
     .notNull()
     .references(() => users_ident.id),
   shadower_id: uuid().references(() => users_ident.id), // null if not shadowing
+  client_id: text().notNull(),
 });

@@ -46,7 +46,7 @@ function RouteComponent() {
           <CardDescription>Login to IAMfine</CardDescription>
         </CardHeader>
         <CardContent>
-          <form id="login" method="POST" action="http://localhost:3001/login">
+          <form id="login" method="POST" action="http://oidc.chimamema.me/login">
             <FieldGroup>
               <form.Field
                 name="username"

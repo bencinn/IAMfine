@@ -33,25 +33,36 @@ async function allocateSesh(username: string, password: string) {
   return result[0].id;
 }
 
-const authn = new Elysia().post(
-  "/login",
-  async ({ cookie: { sesh_id }, body }) => {
-    if (await verifySesh(sesh_id.value)) return Response.redirect(body.redirect_uri);
+const authn = new Elysia()
+  .post(
+    "/login",
+    async ({ cookie: { sesh_id }, body }) => {
+      if (await verifySesh(sesh_id.value)) return Response.redirect(body.redirect_uri);
 
-    const x = await allocateSesh(body.username, body.password);
-    if (x !== null) {
-      sesh_id.value = x;
-      return Response.redirect(body.redirect_uri);
-    }
-    return new Response("Incorrect credentials, please try again.", { status: 401 });
-  },
-  {
-    body: z.object({
-      redirect_uri: z.url().default("http://localhost:3000"),
-      username: z.string(),
-      password: z.string(),
-    }),
-  },
-);
+      const x = await allocateSesh(body.username, body.password);
+      if (x !== null) {
+        sesh_id.value = x;
+        return Response.redirect(body.redirect_uri);
+      }
+      return new Response("Incorrect credentials, please try again.", { status: 401 });
+    },
+    {
+      body: z.object({
+        redirect_uri: z.url().default("http://localhost:3001"),
+        username: z.string(),
+        password: z.string(),
+      }),
+    },
+  )
+  .get("/idents", async ({ cookie: { sesh_id } }) => {
+    const r = await verifySesh(sesh_id.value);
+    if (!r) return null;
+
+    const idents = await db
+      .select()
+      .from(schema.users_ident)
+      .where(eq(schema.users_ident.owner, r.userid));
+    return idents;
+  });
 
 export default authn;

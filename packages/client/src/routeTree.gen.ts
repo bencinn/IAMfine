@@ -9,15 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SelectRouteImport } from './routes/select'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SelectClientidRouteImport } from './routes/select.$clientid'
 
-const SelectRoute = SelectRouteImport.update({
-  id: '/select',
-  path: '/select',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -28,46 +23,44 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SelectClientidRoute = SelectClientidRouteImport.update({
+  id: '/select/$clientid',
+  path: '/select/$clientid',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/select': typeof SelectRoute
+  '/select/$clientid': typeof SelectClientidRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/select': typeof SelectRoute
+  '/select/$clientid': typeof SelectClientidRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/select': typeof SelectRoute
+  '/select/$clientid': typeof SelectClientidRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/select'
+  fullPaths: '/' | '/login' | '/select/$clientid'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/select'
-  id: '__root__' | '/' | '/login' | '/select'
+  to: '/' | '/login' | '/select/$clientid'
+  id: '__root__' | '/' | '/login' | '/select/$clientid'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
-  SelectRoute: typeof SelectRoute
+  SelectClientidRoute: typeof SelectClientidRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/select': {
-      id: '/select'
-      path: '/select'
-      fullPath: '/select'
-      preLoaderRoute: typeof SelectRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -82,13 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/select/$clientid': {
+      id: '/select/$clientid'
+      path: '/select/$clientid'
+      fullPath: '/select/$clientid'
+      preLoaderRoute: typeof SelectClientidRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
-  SelectRoute: SelectRoute,
+  SelectClientidRoute: SelectClientidRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
