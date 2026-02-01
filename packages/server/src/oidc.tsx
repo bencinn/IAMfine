@@ -1,4 +1,5 @@
 import { Elysia } from "elysia";
+import { html, Html } from "@elysiajs/html";
 import z from "zod";
 import db from "./db";
 import * as schema from "./db/schema";
@@ -7,6 +8,7 @@ import { eq, and, or, arrayContains, isNull } from "drizzle-orm";
 import { verifySesh } from "./authn";
 
 const oidc = new Elysia()
+  .use(html())
   .get("/.well-known/jwks.json", async () => {
     const r = await Bun.file("./public-key.json").json();
     if (!r.error) {
@@ -36,7 +38,15 @@ const oidc = new Elysia()
       const sesh = await verifySesh(sesh_id.value);
 
       if (sesh == null) {
-        return "You have not logged in yet, please do so at http://localhost:3000/login";
+        return (
+          <html>
+            You have not logged in yet, please do so at
+            <a onclick="return window.open('http://oidc.chimamema.me/login');">
+              http://oidc.chimamema.me/login
+            </a>
+            and then refresh this page.
+          </html>
+        );
       }
 
       // let's first check if old authz exist for this client_id

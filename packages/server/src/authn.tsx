@@ -5,6 +5,8 @@ import db from "./db";
 import * as schema from "./db/schema";
 import { eq } from "drizzle-orm";
 
+import { html, Html } from "@elysiajs/html";
+
 // TODO: improve this
 export async function verifySesh(sesh_id: unknown | undefined) {
   if (sesh_id === undefined) return null;
@@ -34,6 +36,19 @@ async function allocateSesh(username: string, password: string) {
 }
 
 const authn = new Elysia()
+  .use(html())
+  .get("/login", async ({ cookie: { sesh_id } }) => {
+    if (await verifySesh(sesh_id.value)) return Response.redirect("/");
+    return (
+      <html>
+        <form method="post">
+          <input type="text" name="username" placeholder="username"></input>
+          <input type="password" name="password" placeholder="password"></input>
+          <button type="submit">submit</button>
+        </form>
+      </html>
+    );
+  })
   .post(
     "/login",
     async ({ cookie: { sesh_id }, body }) => {
@@ -54,6 +69,12 @@ const authn = new Elysia()
       }),
     },
   )
+  .get("/logout", async ({ cookie: { sesh_id } }) => {
+    if (!(await verifySesh(sesh_id.value))) return Response.redirect("/");
+    await db.delete(schema.sesh).where(eq(schema.sesh.id, sesh_id.value as string));
+    sesh_id.remove();
+    return Response.redirect("/");
+  })
   .get("/idents", async ({ cookie: { sesh_id } }) => {
     const r = await verifySesh(sesh_id.value);
     if (!r) return null;
